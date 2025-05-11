@@ -1,6 +1,20 @@
 #!/bin/sh
 GAME_DIR=/home/steam/Steam/steamapps/common/VRisingDedicatedServer
 SETTINGS_DIR=$GAME_DIR/VRisingServer_Data/StreamingAssets/Settings
+RED_COLOR='16735838'
+GREEN_COLOR='6225790'
+
+sendDiscordMessage() {
+    if [ -n "${DISCORD_WEBHOOK}" ]; then
+        # local message = $1
+        # local color = $2
+        local TZ_DATE=$(TZ='America/New_York' date +'%D %I:%M%p %Z')
+        echo "Sending Discord message: \"$1\""
+        curl -sfSL -X POST -H "Content-Type: application/json" -d "{\"username\":\"Josef's Server\",\"embeds\":[{\"type\":\"rich\",\"title\":\"Server status update\",\"description\":\"$1\",\"color\":$2,\"footer\":{\"text\":\"$TZ_DATE\"}}]}" "$DISCORD_WEBHOOK"
+    else
+        echo "\n NO DISCORD WEBHOOK FOUND \n"
+    fi
+}
 
 cat >$SETTINGS_DIR/adminlist.txt <<EOL
 ${VR_ADMIN_STEEAMID_1}
@@ -9,6 +23,7 @@ ${VR_ADMIN_STEEAMID_3}
 EOL
 
 onExit() {
+    sendDiscordMessage "Server is shutting down" $RED_COLOR
     kill -INT -$(ps -A | grep 'VRising' | awk '{print $1}') &>> /saves/wtf
     wait $!
 }
@@ -142,6 +157,7 @@ cat $SETTINGS_DIR/ServerGameSettings.json
 
 trap onExit INT TERM KILL
 
+sendDiscordMessage "Server is starting" $GREEN_COLOR
 cd $GAME_DIR
 Xvfb :0 -screen 0 1024x768x16 -terminate &
 setsid '/launch_server.sh' &
