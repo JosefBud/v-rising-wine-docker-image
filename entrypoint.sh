@@ -111,7 +111,7 @@ createSettingsSaves() {
 
 # This logic is flawed and I don't have the energy to fix this
 checkGameSettings() {
-    if [ ! -f "/saves/Settings/ServerGameSettings.json" ]; then
+    if [ ! -f "/saves/Settings/v4/ServerGameSettings.json" ]; then
         # necessary for backwards compatabiltiy
         if [ -f "/var/settings/ServerGameSettings.json" ]; then
             cp /var/settings/ServerGameSettings.json /saves/Settings/ServerGameSettings.json
@@ -119,13 +119,14 @@ checkGameSettings() {
             setServerGameSettings
         fi
     else
-        echo "Using /saves/Settings/ServerGameSettings.json for settings"
+        echo "Using /saves/Settings/v4/ServerGameSettings.json for settings"
+        cat /saves/Settings/v4/ServerGameSettings.json > $SETTINGS_DIR/ServerGameSettings.json
     fi
 }
 
 # This logic is flawed and I don't have the energy to fix this
 checkHostSettings() {
-    if [ ! -f "/saves/Settings/ServerHostSettings.json" ]; then
+    if [ ! -f "/saves/Settings/v4/ServerHostSettings.json" ]; then
         # necessary for backwards compatabiltiy
         if [ -f "/var/settings/ServerHostSettings.json" ]; then
             cp /var/settings/ServerHostSettings.json /saves/Settings/ServerHostSettings.json
@@ -135,7 +136,8 @@ checkHostSettings() {
             setServerHostSettings
         fi
     else
-        echo "Using /saves/Settings/ServerHostSettings.json for settings"
+        echo "Using /saves/Settings/v4/ServerHostSettings.json for settings"
+        cat /saves/Settings/v4/ServerHostSettings.json > $SETTINGS_DIR/ServerHostSettings.json
     fi
 }
 
