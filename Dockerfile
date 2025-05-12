@@ -20,6 +20,10 @@ RUN dpkg --add-architecture i386 && apt-get update && apt-get install wine32 -y
 
 RUN apt-get install winbind -y
 
+RUN apt-get install nodejs npm -y
+
+RUN npm install -g bun
+
 RUN mkdir /saves
 
 RUN chown steam /saves
@@ -38,13 +42,39 @@ COPY entrypoint.sh /
 
 COPY launch_server.sh /
 
+COPY launch_script.sh /
+
+COPY launch-server.ts /
+COPY bun.lock /
+COPY package.json /
+COPY tsconfig.json /
+COPY .env.deployed /.env
+COPY ./prisma/schema.prisma /prisma/schema.prisma
+COPY ./prisma/migrations /prisma/migrations
+
 USER root
+
+RUN bun install --frozen-lockfile
+
+RUN bun generate
 
 RUN chown -R steam /saves
 
 RUN chmod +x /launch_server.sh
 
 RUN chmod +x /entrypoint.sh
+
+RUN chmod +x /launch_script.sh
+
+# RUN chmod +x /launch-server.ts
+# RUN chmod +x /bun.lock
+# RUN chmod +x /package.json
+# RUN chmod +x /tsconfig.json
+
+# RUN ln -s /saves/Settings/launch-server.ts /launch-server.ts
+# RUN ln -s /saves/Settings/bun.lock /bun.lock
+# RUN ln -s /saves/Settings/package.json /package.json
+# RUN ln -s /saves/Settings/tsconfig.json /tsconfig.json
 
 EXPOSE 27020/udp
 EXPOSE 27020/tcp

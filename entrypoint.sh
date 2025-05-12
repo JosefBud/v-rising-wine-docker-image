@@ -10,7 +10,7 @@ sendDiscordMessage() {
         # local color = $2
         local TZ_DATE=$(TZ='America/New_York' date +'%D %I:%M%p %Z')
         echo "Sending Discord message: \"$1\""
-        curl -sfSL -X POST -H "Content-Type: application/json" -d "{\"username\":\"Josef's Server\",\"embeds\":[{\"type\":\"rich\",\"title\":\"Server status update\",\"description\":\"$1\",\"color\":$2,\"footer\":{\"text\":\"$TZ_DATE\"}}]}" "$DISCORD_WEBHOOK"
+        # curl -sfSL -X POST -H "Content-Type: application/json" -d "{\"username\":\"Josef's Server\",\"embeds\":[{\"type\":\"rich\",\"title\":\"Server status update\",\"description\":\"$1\",\"color\":$2,\"footer\":{\"text\":\"$TZ_DATE\"}}]}" "$DISCORD_WEBHOOK"
     else
         echo "\n NO DISCORD WEBHOOK FOUND \n"
     fi
@@ -162,7 +162,7 @@ trap onExit INT TERM KILL
 sendDiscordMessage "Server is starting" $GREEN_COLOR
 cd $GAME_DIR
 Xvfb :0 -screen 0 1024x768x16 -terminate &
-setsid '/launch_server.sh' &
+setsid '/launch_script.sh' &
 
 echo $!
 wait $!

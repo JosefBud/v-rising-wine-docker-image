@@ -1,4 +1,14 @@
 steamcmd
-.env
 saves
 docker-compose.yaml
+
+# Node stuff
+.env
+node_modules
+
+# Prisma or any other generated files
+**/generated
+
+# SQLite
+*.db
+*.db-journal

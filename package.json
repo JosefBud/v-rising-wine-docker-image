@@ -1,0 +1,20 @@
+{
+  "name": "v-rising-wine-docker-image",
+  "private": true,
+  "scripts": {
+    "start": "bun run ./launch-server.ts",
+    "generate": "bunx prisma generate",
+    "migrate": "bunx prisma migrate deploy"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^22.15.17",
+    "prisma": "^6.7.0"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.7.0"
+  }
+}
