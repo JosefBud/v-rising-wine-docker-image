@@ -13,8 +13,8 @@ datasource db {
 
 model User {
   id                 String    @id
-  characterName      String
-  lastSessionId      String @unique
+  characterName      String?
+  lastSessionId      String? @unique
   lastConnectedAt    DateTime
   lastDisconnectedAt DateTime?
   logs               UserLog[]

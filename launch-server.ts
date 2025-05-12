@@ -65,7 +65,7 @@ const handleCharacterJoined = async (message: string) => {
     if (!matches || !matches.length) return;
 
     const [, sessionId, id, characterName] = matches;
-    if (!sessionId || !id || !characterName) return;
+    if (!sessionId || !id || characterName === undefined) return;
 
     addPlayerId(id);
     addSessionId(sessionId);
@@ -93,9 +93,10 @@ const handleCharacterDisconnected = async (message: string) => {
       deleteSessionId(lastSessionId);
     }
     deletePlayerId(id);
-    await prisma.user.update({
+    await prisma.user.upsert({
       where: { id },
-      data: { lastDisconnectedAt: new Date() },
+      update: { lastSessionId, lastDisconnectedAt: new Date()},
+      create: { id, lastSessionId, lastConnectedAt: new Date(), lastDisconnectedAt: new Date() },
     });
   } catch (error) {
     console.error('Error handling character disconnected:', error);
@@ -107,11 +108,12 @@ const handleCharacterSpawning = async (message: string) => {
     const [matches] = message.matchAll(new RegExp(CHARACTER_SPAWNING_REGEX, 'g'));
     if (!matches || !matches.length) return;
     const [, id, characterName] = matches;
-    if (!id || !characterName) return;
+    if (!id || characterName === undefined) return;
 
-    await prisma.user.update({
+    await prisma.user.upsert({
       where: { id },
-      data: { numOfSpawns: { increment: 1 } },
+      update: { characterName, numOfSpawns: { increment: 1 } },
+      create: { id, characterName, lastConnectedAt: new Date(), numOfSpawns: 1 },
     });
   } catch (error) {
     console.error('Error handling character spawning:', error);
